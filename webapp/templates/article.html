@@ -1,0 +1,11 @@
+{% extends "baza.html" %}
+
+{% block content %}
+<div class="card-body">
+    <h5 class="card-title">{{ article.title }}</h5>
+    <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
+    <p class="card-text">{{ article.content }}</p>
+    <p class="card-text">дата изменения: {{ article.updated_at | date:'Y-m-d' }}</p>
+    <a href="/" class="card-link">На главную</a>
+</div>
+{% endblock %}

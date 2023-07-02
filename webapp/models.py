@@ -4,9 +4,10 @@ status_choices = [('new', 'Новая'), ('in_progress', 'В процессе'),
 
 
 class Article(models.Model):
-    title = models.CharField(max_length=50, null=False, blank=False, verbose_name="Название", choices=status_choices)
-    author = models.CharField(max_length=50, null=False, blank=False, verbose_name="Автор", default="Неизвестный")
-    content = models.TextField(max_length=2000, verbose_name="Контент")
+    title = models.CharField(max_length=50, null=False, blank=False, verbose_name="TITLE", choices=status_choices)
+    author = models.CharField(max_length=50, null=False, blank=False, verbose_name="CREATOR", default="EMPTY")
+    content = models.TextField(max_length=2000, verbose_name="CONTENT")
+
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")

@@ -1,0 +1,25 @@
+{% extends "baza.html" %}
+{% block title %}Creating{% endblock %}
+
+<h1>Create Article</h1>
+{% block content %}
+<form action="{% url "article_add" %}" method="post">
+    {% csrf_token %}
+    <label>Title:</label><br/>
+    <label>
+        <input type="text" name="title"/>
+    </label><br/>
+    <label>Text:</label><br/>
+    <label>
+        <textarea name="content"></textarea>
+    </label><br/>
+    <label>Author:</label><br/>
+    <label>
+        <input type="text" name="author"/>
+    </label><br/>
+    <br/>
+    <input type="submit" value="Send"/>
+</form>
+<a href="{% url "index" %}">На главную</a>
+
+{% endblock %}
