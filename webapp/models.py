@@ -13,8 +13,11 @@ class Article(AbstractModel):
     title = models.CharField(max_length=50, null=False, blank=False, verbose_name="TITLE")
     author = models.CharField(max_length=50, null=False, blank=False, verbose_name="CREATOR", default="EMPTY")
     content = models.TextField(max_length=2000, verbose_name="CONTENT")
-    types = models.ManyToManyField('webapp.Type', related_name='articles', through='webapp.ArticleType',
-                                   through_fields=('article', 'type'), blank=True)
+    genres = models.ManyToManyField('webapp.Genre', related_name='articles', through='webapp.ArticleGenre',
+                                   through_fields=('article', 'genre'), blank=True)
+
+    # status = models.ManyToManyField('webapp.Status', related_name='articles', through='webapp.ArticleStatus',
+    #                                 through_fields=('article', 'status'), blank=True)
 
     def __str__(self):
         return f"{self.pk} {self.title}: {self.author}"
@@ -25,22 +28,43 @@ class Article(AbstractModel):
         verbose_name_plural = "Статьи"
 
 
-class Type(AbstractModel):
+class Genre(AbstractModel):
     name = models.CharField(max_length=31, verbose_name='Тип')
 
     def __str__(self):
         return self.name
 
     class Meta:
-        db_table = "Type"
+        db_table = "Genre"
         verbose_name = "Тип"
         verbose_name_plural = "Типы"
 
 
-class ArticleType(AbstractModel):
-    article = models.ForeignKey('webapp.Article', related_name='article_types', on_delete=models.CASCADE,
+class ArticleGenre(AbstractModel):
+    article = models.ForeignKey('webapp.Article', related_name='article_genres', on_delete=models.CASCADE,
                                 verbose_name='Статья')
-    type = models.ForeignKey('webapp.Type', related_name='type_articles', on_delete=models.CASCADE, verbose_name='Тип')
+    genre = models.ForeignKey('webapp.Genre', related_name='genre_articles', on_delete=models.CASCADE, verbose_name='Тип')
 
     def __str__(self):
-        return "{} | {}".format(self.article, self.type)
+        return "{} | {}".format(self.article, self.genre)
+
+# class Status(AbstractModel):
+#     name = models.CharField(max_length=10, verbose_name='Статус')
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         db_table = "Status"
+#         verbose_name = "Статус"
+#         verbose_name_plural = "Статусы"
+#
+#
+# class ArticleStatus(AbstractModel):
+#     article = models.ForeignKey('webapp.Article', related_name='article_statuses', on_delete=models.CASCADE,
+#                                 verbose_name='Статья')
+#     status = models.ForeignKey('webapp.Status', related_name='status_articles', on_delete=models.CASCADE,
+#                                verbose_name='Статус')
+#
+#     def __str__(self):
+#         return "{} | {}".format(self.article, self.status)

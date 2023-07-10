@@ -7,15 +7,16 @@
     </li>
 {% endblock %}
 {% block content %}
-    <h1>TASKS!</h1>
-{% for article in articles %}
-    <div class="card mb-2 mt-2" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title">{{ article.title }}<p><a href="{% url "deleting_view" article.pk %}">delete</a></p></h5>
-            <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
-            <p class="card-text">{{ article.content }}</p>
-            <p><a href="{% url "article_view" article.pk %}" class="card-link">Детальный просмотр</a></p><p><a href="{% url "article_update" article.pk %}" class="card-link">Update</a></p>
+    {% for article in articles %}
+        <div class="card mt-3" style="width: 18rem;">
+        <div class="card-header">
+            <a href="{% url "article_view" article.pk %}" class="card-link">V</a><a href="{% url "article_update_view" article.pk %}" class="card-link">U</a><a href="{% url "article_delete_view" article.pk %}" class="card-link">D</a>
         </div>
-    </div>
-{% endfor %}
+            <div class="card-body">
+                <h5 class="card-title">{{ article.title }}</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
+                <p class="card-text">{{ article.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

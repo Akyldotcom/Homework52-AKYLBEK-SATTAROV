@@ -1,30 +1,34 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
+from django.views import View
+from django.views.generic import TemplateView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
 
 
-def articles_list_view(request):
-    articles = Article.objects.order_by("-updated_at")
-    context = {"articles": articles}
-    return render(request, "index.html", context)
+class ArticleListView(View):
+    def get(self, request, *args, **kwargs):
+        articles = Article.objects.order_by("-updated_at")
+        context = {"articles": articles}
+        return render(request, "index.html", context)
 
 
-def article_create_view(request):
-    if request.method == "GET":
+class ArticleCreateView(View):
+    def get(self, request, *args, **kwargs):
         form = ArticleForm()
         return render(request, "create_article.html", {"form": form})
-    else:
+
+    def post(self, request, *args, **kwargs):
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-            types = form.cleaned_data.pop("types")
+            genres = form.cleaned_data.pop("genres")
             article = Article.objects.create(title=form.cleaned_data.get("title"),
                                              content=form.cleaned_data.get("content"),
                                              author=form.cleaned_data.get("author")),
-            article.types.set(types)
-            return redirect("article_view", pk=article.pk)
 
+            article.genres.set(genres)
+            return redirect("article_view", pk=article.pk)
         else:
             return render(request, "create_article.html", {"form": form})
 
@@ -44,16 +48,19 @@ def article_update_view(request, pk):
         form = ArticleForm(initial={
             "title": article.title,
             "author": article.author,
-            "content": article.content
+            "content": article.content,
+            "genres": article.genres.all()
         })
         return render(request, "update_article.html", {"form": form})
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-            article.title = request.POST.get("title")
-            article.content = request.POST.get("content")
-            article.author = request.POST.get("author")
+            genres = form.cleaned_data.pop("genres")
+            article.title = form.cleaned_data.get("title")
+            article.content = form.cleaned_data.get("content")
+            article.author = form.cleaned_data.get("author")
             article.save()
+            article.genres.set(genres)
             return redirect("article_view", pk=article.pk)
         else:
             return render(request, "update_article.html", {"form": form})
@@ -66,3 +73,13 @@ def article_delete_view(request, pk):
     else:
         article.delete()
         return redirect("index")
+
+
+class ArticleDView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["article"] = get_object_or_404(Article, id=kwargs['pk'])
+        return context
+
+    def get_template_names(self):
+        return "article.html"
