@@ -11,23 +11,23 @@ def articles_list_view(request):
     return render(request, "index.html", context)
 
 
-
 def article_create_view(request):
     if request.method == "GET":
         form = ArticleForm()
-        print(form)
         return render(request, "create_article.html", {"form": form})
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
-
+            types = form.cleaned_data.pop("types")
             article = Article.objects.create(title=form.cleaned_data.get("title"),
                                              content=form.cleaned_data.get("content"),
-                                             author=form.cleaned_data.get("author"))
+                                             author=form.cleaned_data.get("author")),
+            article.types.set(types)
             return redirect("article_view", pk=article.pk)
+
         else:
-            print(form.errors)
             return render(request, "create_article.html", {"form": form})
+
 
 def article_view(request, *args, pk, **kwrags):
     # article = get_object_or_404(Article, id=pk)
@@ -57,6 +57,8 @@ def article_update_view(request, pk):
             return redirect("article_view", pk=article.pk)
         else:
             return render(request, "update_article.html", {"form": form})
+
+
 def article_delete_view(request, pk):
     article = get_object_or_404(Article, id=pk)
     if request.method == "GET":
