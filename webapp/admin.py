@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from webapp.models import Article
+from webapp.models import Article, Genre
 
 
 class ArticleAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ class ArticleAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Article, ArticleAdmin)
+admin.site.register(Genre)
