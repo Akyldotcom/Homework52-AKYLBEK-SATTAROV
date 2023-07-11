@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, FormView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
@@ -14,32 +14,52 @@ class ArticleListView(View):
         return render(request, "index.html", context)
 
 
-class ArticleCreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = ArticleForm()
-        return render(request, "create_article.html", {"form": form})
+class ArticleCreateView(FormView):
+    form_class = ArticleForm
+    template_name = "create_article.html"
 
-    def post(self, request, *args, **kwargs):
-        form = ArticleForm(data=request.POST)
-        if form.is_valid():
-            genres = form.cleaned_data.pop("genres")
-            article = Article.objects.create(title=form.cleaned_data.get("title"),
-                                             content=form.cleaned_data.get("content"),
-                                             author=form.cleaned_data.get("author")),
-
-            article.genres.set(genres)
-            return redirect("article_view", pk=article.pk)
-        else:
-            return render(request, "create_article.html", {"form": form})
+    def form_valid(self, form):
+        article = form.save()
+        return redirect("article_view", pk=article.pk)
 
 
-def article_view(request, *args, pk, **kwrags):
-    # article = get_object_or_404(Article, id=pk)
-    try:
-        article = Article.objects.get(id=pk)
-    except Article.DoesNotExist:
-        return HttpResponseNotFound("Not found ")
-    return render(request, "article.html", {"article": article})
+# def get(self, request, *args, **kwargs):
+#     form = ArticleForm()
+#     return render(request, "create_article.html", {"form": form})
+#
+# def post(self, request, *args, **kwargs):
+#     form = ArticleForm(data=request.POST)
+#     if form.is_valid():
+#         genres = form.cleaned_data.pop("genres")
+#         article = Article.objects.create(title=form.cleaned_data.get("title"),
+#                                          content=form.cleaned_data.get("content"),
+#                                          author=form.cleaned_data.get("author"),
+#                                          )
+#         article.genres.set(genres)
+#         return redirect("article_view", pk=article.pk)
+#     else:
+#         return render(request, "create_article.html", {"form": form})
+
+
+class ArticleUpdateView(FormView):
+    form_class = ArticleForm
+    template_name = "update_article.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        self.article = self.get_object(kwargs.get("pk"))
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, pk):
+        return get_object_or_404(Article, id=pk)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.article
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return redirect("article_view", pk=self.article.pk)
 
 
 def article_update_view(request, pk):
@@ -64,6 +84,15 @@ def article_update_view(request, pk):
             return redirect("article_view", pk=article.pk)
         else:
             return render(request, "update_article.html", {"form": form})
+
+
+def article_view(request, *args, pk, **kwrags):
+    # article = get_object_or_404(Article, id=pk)
+    try:
+        article = Article.objects.get(id=pk)
+    except Article.DoesNotExist:
+        return HttpResponseNotFound("Not found ")
+    return render(request, "article.html", {"article": article})
 
 
 def article_delete_view(request, pk):

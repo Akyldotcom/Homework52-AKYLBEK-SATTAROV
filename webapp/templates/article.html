@@ -8,10 +8,10 @@
     <p class="card-text">дата изменения: {{ article.updated_at | date:'Y-m-d' }}</p>
     <a href="/" class="card-link">На главную</a>
 </div>
-    <h2>Теги</h2>
+    <h5>Теги</h5>
     <p>
-        {% for type in article.types.all %}
-            {{ type.name }}
+        {% for genres in article.genres.all %}
+            {{ genres.name }}
             {% if not forloop.last %},
             {% else %} .
             {% endif %}

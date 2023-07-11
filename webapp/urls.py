@@ -3,7 +3,7 @@ from django.views.generic import RedirectView
 
 
 from webapp.views import \
-    article_update_view, article_delete_view, ArticleListView, ArticleCreateView, ArticleDView
+     ArticleListView, ArticleCreateView, ArticleDView,article_update_view, article_delete_view
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name="index")),
