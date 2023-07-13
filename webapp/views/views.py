@@ -1,22 +1,23 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotFound
 from django.views import View
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView, FormView, ListView
 
 from webapp.forms import ArticleForm
 from webapp.models import Article
+
 
 
 class ArticleListView(View):
     def get(self, request, *args, **kwargs):
         articles = Article.objects.order_by("-updated_at")
         context = {"articles": articles}
-        return render(request, "index.html", context)
+        return render(request, "articles/index.html", context)
 
 
 class ArticleCreateView(FormView):
     form_class = ArticleForm
-    template_name = "create_article.html"
+    template_name = "articles/create_article.html"
 
     def form_valid(self, form):
         article = form.save()
@@ -43,7 +44,11 @@ class ArticleCreateView(FormView):
 
 class ArticleUpdateView(FormView):
     form_class = ArticleForm
-    template_name = "update_article.html"
+    template_name = "articles/update_article.html"
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.article = None
 
     def dispatch(self, request, *args, **kwargs):
         self.article = self.get_object(kwargs.get("pk"))
@@ -71,7 +76,7 @@ def article_update_view(request, pk):
             "content": article.content,
             "genres": article.genres.all()
         })
-        return render(request, "update_article.html", {"form": form})
+        return render(request, "articles/update_article.html", {"form": form})
     else:
         form = ArticleForm(data=request.POST)
         if form.is_valid():
@@ -83,7 +88,7 @@ def article_update_view(request, pk):
             article.genres.set(genres)
             return redirect("article_view", pk=article.pk)
         else:
-            return render(request, "update_article.html", {"form": form})
+            return render(request, "articles/update_article.html", {"form": form})
 
 
 def article_view(request, *args, pk, **kwrags):
@@ -92,13 +97,13 @@ def article_view(request, *args, pk, **kwrags):
         article = Article.objects.get(id=pk)
     except Article.DoesNotExist:
         return HttpResponseNotFound("Not found ")
-    return render(request, "article.html", {"article": article})
+    return render(request, "articles/article.html", {"article": article})
 
 
 def article_delete_view(request, pk):
     article = get_object_or_404(Article, id=pk)
     if request.method == "GET":
-        return render(request, "delete_article.html", {"article": article})
+        return render(request, "articles/delete_article.html", {"article": article})
     else:
         article.delete()
         return redirect("index")
