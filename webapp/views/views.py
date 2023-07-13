@@ -7,13 +7,16 @@ from webapp.forms import ArticleForm
 from webapp.models import Article
 
 
+class ArticleListView(ListView):
+    model = Article
+    template_name = "articles/index.html"
+    context_object_name = "articles"
+    ordering = ("updated_at", )
+    paginate_by = 5
 
-class ArticleListView(View):
-    def get(self, request, *args, **kwargs):
-        articles = Article.objects.order_by("-updated_at")
-        context = {"articles": articles}
-        return render(request, "articles/index.html", context)
-
+    def  get_queryset(self):
+        queryset= super().get_queryset()
+        return queryset.filter(title__contains="A")
 
 class ArticleCreateView(FormView):
     form_class = ArticleForm
@@ -116,4 +119,4 @@ class ArticleDView(TemplateView):
         return context
 
     def get_template_names(self):
-        return "article.html"
+        return "articles/article.html"
