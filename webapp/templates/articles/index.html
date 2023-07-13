@@ -7,17 +7,19 @@
     </li>
 {% endblock %}
 {% block content %}
-    {% for article in articles %}
-        <div class="card mt-3" style="width: 18rem;">
-        <div class="card-header">
-            <a href="{% url "article_view" article.pk %}" class="card-link">V</a><a href="{% url "article_update_view" article.pk %}" class="card-link">U</a><a href="{% url "article_delete_view" article.pk %}" class="card-link">D</a>
-        </div>
-            <div class="card-body">
-                <h5 class="card-title">{{ article.title }}</h5>
-                <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
-                <p class="card-text">{{ article.content }}</p>
+    {% include "partial/search_form.html" %}
+        {% for article in articles %}
+            <div class="card mt-3" style="width: 18rem;">
+            <div class="card-header">
+                <a href="{% url "article_view" article.pk %}" class="card-link">V</a><a href="{% url "article_update_view" article.pk %}" class="card-link">U</a><a href="{% url "article_delete_view" article.pk %}" class="card-link">D</a>
             </div>
-        </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.author }}</h6>
+                    <p class="card-text">{{ article.content }}</p>
+                </div>
+            </div>
+
     {% endfor %}
     {% if is_paginated %}
    {% include 'partial/paginator.html' %}

@@ -1,4 +1,3 @@
-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
@@ -37,6 +36,7 @@ class ArticleForm(forms.ModelForm):
             "content": widgets.Textarea(attrs={"cols": 30, "rows": 5, "class": "test"}),
             "genres": widgets.CheckboxSelectMultiple
         }
+
     # title = forms.CharField(max_length=50, required=True, label="Название", validators=[validator_for_Author])
     # author = forms.CharField(max_length=50, required=True, label="Автор")
     # content = forms.CharField(max_length=2000, required=True, label="Контент")
@@ -56,3 +56,8 @@ class ArticleForm(forms.ModelForm):
     #     else:
     #         if len(value) > 50:
     #             raise ValidationError('This value is to long')
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=20, required=False, label="Поиск")
+
