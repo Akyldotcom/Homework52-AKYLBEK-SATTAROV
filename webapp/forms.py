@@ -2,7 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
 
-from webapp.models import Genre, Article
+from webapp.models import Article
 
 
 def validator_for_Author(value):
@@ -60,4 +60,3 @@ class ArticleForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=20, required=False, label="Поиск")
-

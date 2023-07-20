@@ -51,7 +51,7 @@ class ArticleCreateView(FormView):
 
     def form_valid(self, form):
         article = form.save()
-        return redirect("article_view", pk=article.pk)
+        return redirect("webapp:article_view", pk=article.pk)
 
 
 # def get(self, request, *args, **kwargs):
@@ -67,7 +67,7 @@ class ArticleCreateView(FormView):
 #                                          author=form.cleaned_data.get("author"),
 #                                          )
 #         article.genres.set(genres)
-#         return redirect("article_view", pk=article.pk)
+#         return redirect("webapp:article_view", pk=article.pk)
 #     else:
 #         return render(request, "create_article.html", {"form": form})
 
@@ -95,12 +95,12 @@ class ArticleUpdateView(UpdateView):
     #
     # def form_valid(self, form):
     #     form.save()
-    #     return redirect("article_view", pk=self.article.pk)
+    #     return redirect("webapp:article_view", pk=self.article.pk)
     #
     #
 
 #
-# def article_update_view(request, pk):
+# def webapp:webapp:article_update_view(request, pk):
 #     article = get_object_or_404(Article, id=pk)
 #     if request.method == "GET":
 #         form = ArticleForm(initial={
@@ -119,12 +119,12 @@ class ArticleUpdateView(UpdateView):
 #             article.author = form.cleaned_data.get("author")
 #             article.save()
 #             article.genres.set(genres)
-#             return redirect("article_view", pk=article.pk)
+#             return redirect("webapp:article_view", pk=article.pk)
 #         else:
 #             return render(request, "articles/update_article.html", {"form": form})
 
 
-# def article_view(request, *args, pk, **kwrags):
+# def webapp:article_view(request, *args, pk, **kwrags):
 #     # article = get_object_or_404(Article, id=pk)
 #     try:
 #         article = Article.objects.get(id=pk)
@@ -135,7 +135,7 @@ class ArticleUpdateView(UpdateView):
 class ArticleDeleteView(DeleteView):
     model = Article
     template_name = "articles/delete_article.html"
-    success_url = reverse_lazy("index")
+    success_url = reverse_lazy("webapp:index")
 
 
 # def article_delete_view(request, pk):

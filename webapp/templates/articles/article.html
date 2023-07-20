@@ -1,5 +1,14 @@
 {% extends "baza.html" %}
-
+{% block link %}
+    {% if request.user.is_authenticated %}
+    <li class="nav-item">
+        <a href="{% url "webapp:article_update_view" article.pk %}" class="nav-link">Редактирование</a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url "webapp:article_delete_view" article.pk %}" class="nav-link">Удаление</a>
+    </li>
+    {% endif %}
+{% endblock %}
 {% block content %}
 <div class="card-body">
     <h5 class="card-title">{{ article.title }}</h5>
